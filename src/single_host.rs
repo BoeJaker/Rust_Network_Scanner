@@ -10,7 +10,7 @@ const TIMEOUT_SECS: u64 = 2;
 const SERVICE_TIMEOUT_SECS: u64 = 10;
 const READ_TIMEOUT_SECS: u64 = 10;
 
-fn scan_port(ip: IpAddr, port: u16, results: Arc<Mutex<Vec<(u16, String, Option<String>)>>>, pb: Arc<ProgressBar>) {
+fn scan_port(ip: IpAddr, port: u16, results: Arc<Mutex<Vec<(String, u16, String, Option<String>)>>>, pb: Arc<ProgressBar>) {
     let socket_addr = SocketAddr::new(ip, port);
     let mut service_found = "Unknown".to_string();
     let mut response = None;
@@ -49,7 +49,7 @@ fn scan_port(ip: IpAddr, port: u16, results: Arc<Mutex<Vec<(u16, String, Option<
     }
 
     let mut results = results.lock().unwrap();
-    results.push((port, service_found, response));
+    results.push((ip.to_string(), port, service_found, response));
 
     pb.inc(1);
 }
@@ -86,9 +86,9 @@ pub fn main_host() {
 
     let results = results.lock().unwrap();
     println!("Open ports:");
-    for (port, service, response)in results.iter() {
+    for (ip_string, port, service, response)in results.iter() {
         if response.is_some(){
-        println!(" - {}: {} {:?}", port, service, response.as_ref().unwrap());
+        println!("{:?} - {}: {} {:?}",ip_string, port, service, response.as_ref().unwrap());
         };
     }
 }

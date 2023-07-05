@@ -1,7 +1,7 @@
 mod single_host;
-mod multiple_hosts;
+mod network_range_scan_optimised;
 
 fn main() {
     single_host::main_host();
-    multiple_hosts::main_range();
+    network_range_scan_optimised::main_range();
 }
